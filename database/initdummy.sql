@@ -91,15 +91,4 @@ VALUES (
     NULL
 );
 
-INSERT INTO TBL_BUDGET
-VALUES (
-    SEQ_BUDGET.NEXTVAL,
-    1,
-    2,
-    '2026-06',
-    300000,
-    SYSDATE,
-    NULL
-);
-
 COMMIT;
