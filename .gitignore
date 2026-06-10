@@ -1,0 +1,20 @@
+# Eclipse workspace/project metadata
+**/.metadata/
+**/.settings/
+**/.classpath
+**/.project
+**/.factorypath
+
+# Java build output
+**/bin/
+**/out/
+**/build/
+**/target/
+**/*.class
+
+# Logs
+**/*.log
+
+# OS
+.DS_Store
+Thumbs.db
