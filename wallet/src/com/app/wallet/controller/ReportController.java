@@ -1,40 +1,73 @@
 package com.app.wallet.controller;
 
+import java.util.List;
+
+import com.app.wallet.dto.AccountDTO;
+import com.app.wallet.dto.CategorySummaryDTO;
+import com.app.wallet.dto.MemberDTO;
+import com.app.wallet.dto.MonthlySummaryDTO;
+import com.app.wallet.service.ReportService;
 import com.app.wallet.view.View;
 
 public class ReportController {
 
 	private final View view;
+	private final ReportService reportService = new ReportService();
 
 	public ReportController(View view) {
 		this.view = view;
 	}
 
-	public void showTotalAssetSummary(int memberId) {
-		view.showMessage("내 전체 자산 요약 조회 기능 준비 중");
+	public void runReportMenu(MemberDTO loginMember) {
+		boolean running = true;
+
+		while (running) {
+			int menu = view.menu().showReportMenu();
+
+			try {
+				switch (menu) {
+				case 1:
+					showTotalBalance(loginMember);
+					break;
+				case 2:
+					showAccountBalances(loginMember);
+					break;
+				case 3:
+					showMonthlySummary(loginMember);
+					break;
+				case 4:
+					showCategorySummary(loginMember);
+					break;
+				case 0:
+					running = false;
+					break;
+				default:
+					view.showError("잘못된 메뉴입니다.");
+				}
+			} catch (RuntimeException e) {
+				view.showError(e.getMessage());
+			}
+		}
 	}
 
-	public void showAccountBalances(int memberId) {
-		view.showMessage("계좌별 잔액 조회 기능 준비 중");
+	private void showTotalBalance(MemberDTO loginMember) {
+		long totalBalance = reportService.getTotalBalance(loginMember.getId());
+		view.report().printTotalBalance(totalBalance);
 	}
 
-	public void showAllHistories(int memberId) {
-		view.showMessage("내 자산 전체 내역 조회 기능 준비 중");
+	private void showAccountBalances(MemberDTO loginMember) {
+		List<AccountDTO> accounts = reportService.getAccountBalances(loginMember.getId());
+		view.account().printAccounts(accounts);
 	}
 
-	public void showAccountHistories(int memberId) {
-		view.showMessage("특정 계좌 전체 내역 조회 기능 준비 중");
+	private void showMonthlySummary(MemberDTO loginMember) {
+		List<MonthlySummaryDTO> summaries = reportService.getMonthlySummary(loginMember.getId());
+		view.report().printMonthlySummaries(summaries);
 	}
 
-	public void showCategorySummary(int memberId) {
-		view.showMessage("내 자산 카테고리별 조회 기능 준비 중");
-	}
-
-	public void showAccountCategorySummary(int memberId) {
-		view.showMessage("특정 계좌 카테고리별 조회 기능 준비 중");
-	}
-
-	public void showMonthlySummary(int memberId) {
-		view.showMessage("월별 수입/지출 요약 조회 기능 준비 중");
+	private void showCategorySummary(MemberDTO loginMember) {
+		String monthValue = view.report().inputMonth();
+		List<CategorySummaryDTO> summaries = reportService.getCategorySummary(loginMember.getId(), monthValue);
+		view.report().printCategorySummaries(summaries);
 	}
 }

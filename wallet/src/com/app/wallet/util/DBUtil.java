@@ -9,7 +9,7 @@ import java.sql.Statement;
 public class DBUtil {
 
 	private static final String DRIVER = "oracle.jdbc.OracleDriver";
-	private static final String URL = "jdbc:oracle:thin:@//localhost:1521/XEPDB1"; // "jdbc:oracle:thin:@localhost:1521:xe";
+	private static final String URL = "jdbc:oracle:thin:@//localhost:1522/XEPDB1";
 	private static final String USER = "hr";
 	private static final String PASSWORD = "hr";
 
@@ -17,18 +17,14 @@ public class DBUtil {
 	}
 
 	public static Connection dbConnect() {
-		Connection conn = null;
-
 		try {
 			Class.forName(DRIVER);
-			conn = DriverManager.getConnection(URL, USER, PASSWORD);
+			return DriverManager.getConnection(URL, USER, PASSWORD);
 		} catch (ClassNotFoundException e) {
-			System.err.println("DBUtil.dbConnect() - ClassNotFoundException : " + e.getMessage());
+			throw new RuntimeException("Oracle JDBC Driver를 찾을 수 없습니다.", e);
 		} catch (SQLException e) {
-			System.err.println("DBUtil.dbConnect() - SQLException : " + e.getMessage());
+			throw new RuntimeException("DB 연결 중 오류: ", e);
 		}
-
-		return conn;
 	}
 
 	public static void dbDisconnect(Connection conn, Statement st, ResultSet rs) {
@@ -45,7 +41,7 @@ public class DBUtil {
 				conn.close();
 			}
 		} catch (SQLException e) {
-			System.err.println("DBUtil.dbDisconnect() - SQLException : " + e.getMessage());
+			System.err.println("DB 자원 해제 중 오류: " + e.getMessage());
 		}
 	}
 
@@ -55,7 +51,7 @@ public class DBUtil {
 				conn.commit();
 			}
 		} catch (SQLException e) {
-			System.err.println("DBUtil.commit() - SQLException : " + e.getMessage());
+			throw new RuntimeException("commit 처리 중 오류: ", e);
 		}
 	}
 
@@ -65,7 +61,7 @@ public class DBUtil {
 				conn.rollback();
 			}
 		} catch (SQLException e) {
-			System.err.println("DBUtil.rollback() - SQLException : " + e.getMessage());
+			System.err.println("rollback 처리 중 오류: " + e.getMessage());
 		}
 	}
 }
