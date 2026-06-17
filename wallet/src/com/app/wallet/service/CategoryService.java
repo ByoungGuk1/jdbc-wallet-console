@@ -22,6 +22,14 @@ public class CategoryService {
 	}
 
 	public boolean updateCategory(CategoryDTO category) {
+		CategoryDTO original = categoryDAO.selectCategoryById(category);
+		if (category.getCategoryName().isEmpty()) {
+			category.setCategoryName(original.getCategoryName());
+		}
+		if (category.getCategoryType().isEmpty()) {
+			category.setCategoryType(original.getCategoryType());
+		}
+
 		return categoryDAO.updateCategory(category) == 1;
 	}
 

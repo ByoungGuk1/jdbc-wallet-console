@@ -9,17 +9,44 @@ import java.sql.Statement;
 public class DBUtil {
 
 	private static final String DRIVER = "oracle.jdbc.OracleDriver";
-	private static final String URL = "jdbc:oracle:thin:@//localhost:1522/XEPDB1";
 	private static final String USER = "hr";
 	private static final String PASSWORD = "hr";
 
+	private static final String[] URLS = { "jdbc:oracle:thin:@//192.168.0.13:1521/XE",
+			"jdbc:oracle:thin:@//192.168.0.13:1522/XEPDB1", "jdbc:oracle:thin:@//localhost:1522/XEPDB1",
+			"jdbc:oracle:thin:@//localhost:1521/XE" };
+
+	private static String activeUrl;
+
 	private DBUtil() {
+	}
+
+	static {
+		try {
+			Class.forName(DRIVER);
+			activeUrl = findActiveUrl();
+		} catch (ClassNotFoundException e) {
+			throw new RuntimeException("Oracle JDBC Driver를 찾을 수 없습니다.", e);
+		}
+	}
+
+	private static String findActiveUrl() {
+		for (String url : URLS) {
+			try (Connection conn = DriverManager.getConnection(url, USER, PASSWORD)) {
+				if (conn != null)
+					conn.close();
+				return url;
+			} catch (SQLException e) {
+				// 다음 URL 확인
+			}
+		}
+		throw new RuntimeException("접속 가능한 DB URL이 없습니다.");
 	}
 
 	public static Connection dbConnect() {
 		try {
 			Class.forName(DRIVER);
-			return DriverManager.getConnection(URL, USER, PASSWORD);
+			return DriverManager.getConnection(activeUrl, USER, PASSWORD);
 		} catch (ClassNotFoundException e) {
 			throw new RuntimeException("Oracle JDBC Driver를 찾을 수 없습니다.", e);
 		} catch (SQLException e) {

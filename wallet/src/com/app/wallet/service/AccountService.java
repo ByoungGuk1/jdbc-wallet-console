@@ -22,6 +22,16 @@ public class AccountService {
 	}
 
 	public boolean updateAccount(AccountDTO account) {
+		AccountDTO original = accountDAO.selectAccountById(account);
+		if (account.getAccountName().isEmpty()) {
+			account.setAccountName(original.getAccountName());
+		}
+		if (account.getBankName().isEmpty()) {
+			account.setBankName(original.getBankName());
+		}
+		if (account.getAccountNumber().isEmpty()) {
+			account.setAccountNumber(original.getAccountNumber());
+		}
 		return accountDAO.updateAccount(account) == 1;
 	}
 

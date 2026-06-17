@@ -21,6 +21,7 @@ public class AccountQuery {
 			WHERE ID = ?
 			  AND MEMBER_ID = ?
 			  AND ACCOUNT_STATUS = 'ACTIVE'
+			ORDER BY ID
 			""";
 
 	public static final String UPDATE_ACCOUNT = """
@@ -57,5 +58,6 @@ public class AccountQuery {
 			FROM TBL_ACCOUNT
 			WHERE MEMBER_ID = ?
 			  AND ACCOUNT_STATUS = 'ACTIVE'
+			ORDER BY ID
 			""";
 }

@@ -11,7 +11,7 @@ public class CategoryQuery {
 			SELECT ID, MEMBER_ID, CATEGORY_NAME, CATEGORY_TYPE, CREATED_AT, UPDATED_AT
 			FROM TBL_CATEGORY
 			WHERE MEMBER_ID = ?
-			ORDER BY CATEGORY_TYPE, ID
+			ORDER BY ID
 			""";
 
 	public static final String SELECT_CATEGORIES_BY_TYPE = """
@@ -27,6 +27,7 @@ public class CategoryQuery {
 			FROM TBL_CATEGORY
 			WHERE ID = ?
 			  AND MEMBER_ID = ?
+			ORDER BY ID
 			""";
 
 	public static final String UPDATE_CATEGORY = """
